@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miyako"
+# 对应仓库根 VERSION=0.7.0 的规范化写法；发布流程（M+3.5）以 VERSION 为准
+version = "0.8.0"
+description = "miyako - Windows 桌面本地 AI 陪伴角色（PySide6 客户端 + FastAPI 服务端，全 mock 可启动）"
+requires-python = ">=3.10"
+dependencies = [
+    # <6.9：6.11 QtCore DLL 在部分 Win10 机器加载失败（实测），6.8 LTS 可用
+    "PySide6>=6.6,<6.9",
+    "fastapi",
+    "uvicorn[standard]",
+    "websockets",
+    "httpx",
+    "pydantic",
+    "pydantic-settings",
+    "PyYAML",
+    "python-dotenv",
+    "numpy",
+    "sounddevice",
+    "pytest",
+    "pytest-asyncio",
+    "freezegun",
+]
+
+[project.optional-dependencies]
+asr = ["faster-whisper>=1.0"]
+aec = ["pyaec>=1.0", "pycaw", "webrtc-audio-processing; sys_platform != 'win32'"]
+ocr = ["rapidocr-onnxruntime>=1.4"]
+tts_edge = ["edge-tts>=6.1", "miniaudio>=1.0"]
+memory = ["sqlite-vec>=0.1"]
+llm_ollama = ["ollama>=0.3"]
+
+[tool.setuptools.packages.find]
+# 只打包业务包；tests/tools/scripts/data 不进 wheel
+include = ["client*", "server*"]

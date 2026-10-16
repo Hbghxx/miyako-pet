@@ -1,0 +1,4 @@
+# bat 批处理必须保持 CRLF 行尾（cmd 对 LF 行尾的标签/多行解析不可靠）；
+# 仓库内以 LF 存储，检出时统一转 CRLF（M-1.5 / M+3.5.1 的格式验收依据）。
+*.bat text eol=crlf
+README.txt text eol=crlf

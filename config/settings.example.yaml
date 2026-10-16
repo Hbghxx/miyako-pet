@@ -1,0 +1,263 @@
+# ══════════════════════════════════════════════════════════════════
+#  miyako 应用层配置 · 全键文档模板（本文件 = 注释最全的参考手册）
+# ══════════════════════════════════════════════════════════════════
+#
+# 【这份文件是什么】
+#   setup_env.py 会把本文件复制为 config/settings.yaml（你的实配文件，
+#   已存在则绝不覆盖）。本模板刻意保持「全 mock 可启动」的默认值，
+#   并为每一个键写明：功能 / 取值范围 / 生效方式 / 自定义建议。
+#   想自定义什么，直接在 settings.yaml 里照注释改即可。
+#
+# 【三个全局规则】
+#   1. 生效方式：标注「实时」的键在运行中即改即见（设置窗/托盘 UI 同时改
+#      内存态）；其余键重启 miyako 后生效（托盘「仅关闭 miyako」→ 启动bat）。
+#   2. fail-open：任何键缺失/拼错/类型不对 → 该功能回退内置默认，不会崩溃；
+#      行为异常时先看 logs/ 里的 warning，再查缩进（YAML 对缩进敏感）。
+#   3. 机密分离：API key 等只放仓库根 .env（见 config/.env.example），
+#      禁止写进本文件。
+#
+# 【各节速查】
+#   character  激活哪个角色包        server      服务端口（仅本机回环）
+#   llm        对话/后台 LLM         providers   TTS/ASR/VLM 引擎选型
+#   asr        本地语音识别参数      audio       回声消除/打断
+#   voice      🎤 连续对话与断句     behavior    主动搭话/闲置嗅探/热键
+#   camera     摄像头感知            vision      VLM 看图参数
+#   ui_theme   立绘/气泡/输入栏外观  screen_triggers  识屏规则+陪玩模式
+#   update     应用内检查更新
+# ============================================================
+
+proto_ver: 1            # 协议版本（勿改；client/server 消息格式标识）
+
+# ────────────────── 角色（v1.9 角色插拔） ──────────────────
+character:
+  # 激活哪个角色包：data/characters/{package_id}.char
+  # 多包共存；每角色一库（data/memory/{package_id}.db），切换=托盘「切换角色」重启式
+  # 缺失/非法（含路径穿越字符）→ 回退 miyako.char + 启动 ⚠️ 横幅
+  package_id: miyako
+
+# ────────────────── 服务端端口 ──────────────────
+server:
+  host: "127.0.0.1"     # 【安全铁律】仅本地回环；写别的值会被强制覆盖 + warning
+  port: 9800            # client ↔ server 的 WS 端口；被占用时客户端会诊断提示
+
+# ────────────────── LLM：对话主模型 + 四槽位路由 ──────────────────
+llm:
+  provider: mock        # mock（零联网，默认）| api（OpenAI 兼容端点，任意厂商或 Ollama）
+  api:                  # ↓ provider: api 时生效；BYOK——key 只放 .env
+    base_url: "https://api.deepseek.com/v1"  # OpenAI 兼容端点；Ollama 填 http://127.0.0.1:11434/v1
+    api_key_env: "OPENAI_API_KEY"            # 从该环境变量读 key（写在 .env 里）
+    model: "deepseek-chat"                   # 全槽位默认模型；miyako 台词是行式格式，建议 7B+ 或专聊模型
+    temperature: 0.8    # 采样温度：越高越发散；陪伴场景 0.7~1.0 都常见
+    timeout_s: 60       # 单次请求超时（秒）；流式场景一般无需调小
+    extra:              # 供应商私有参数透传（合并进请求体顶层；谨慎使用）
+      thinking: {type: "disabled"}   # 智谱系：禁深度思考，对话首字 8.8s→0.8s（实测）；后台槽可单独开启
+    price_cny_per_1m: null         # 每 1M token 混合价；null=不计成本（Token 监控页显示「未配置」）
+    price_cny_per_1m_cached: null  # 缓存命中 token 单价（厂商约 5 折）；null=按混合价计
+  roles:                # 四槽位路由（factory.build_llm(role) 消费）——
+    chat: inherit       #   主对话；inherit = 跟随上方 provider/model
+    emotion: inherit    #   情绪评估（reply 后台槽，不赶时间）
+    correction: inherit #   记忆纠错
+    diary: inherit      #   角色日记
+    #   分槽示例：diary: {provider: api, model: "更强模型"}——后台槽可点名大杯；
+    #   chat 槽默认禁 thinking（extra 已带），后台槽想开就给该槽位配 extra 覆盖
+
+# ────────────────── TTS / ASR / VLM 引擎选型 ──────────────────
+providers:
+  tts: mock             # TTS 音色级（失败一律落纯气泡；2026-09-12 定案：听错误音色
+                        #   不如纯文本，无中间音色级）：
+                        #   gptsovits   自训音色：需先启动 GPT-SoVITS api_v2（127.0.0.1:9880）
+                        #   cloud_clone 云端克隆音色（见下方 tts_cloudclone 段）
+  tts_cloudclone:       # providers.tts: cloud_clone 时生效
+    base_url: ""        # OpenAI 兼容端点，如 https://api.siliconflow.cn/v1 或
+                        #   https://dashscope.aliyuncs.com/compatible-mode/v1
+    model: ""           # 如 FunAudioLLM/CosyVoice2-0.5B（SiliconFlow）或 cosyvoice-v2（百炼）
+    voice: ""           # 克隆音色 id（在服务商控制台上传 ~5s 干净录音克隆后获得）
+    api_key_env: "CLOUD_TTS_API_KEY"   # key 从 .env 读；README 透明度声明第三类外发面
+  tts_service_yaml: ""  # GPT-SoVITS 服务推理 yaml 绝对路径（如
+                        #   E:\game\gal\tool\GPT-SoVITS\_setup\tts_infer_miyako.yaml）；
+                        #   托盘「一键配置角色包」的 TTS 权重接线目标（接线时原文件
+                        #   自动备份 .bak-日期）；留空=导入卡时不做 TTS 权重接线
+  asr: mock             # 备选: whisper（本地 faster-whisper，extras asr；参数见下方 asr 段）
+  vlm: mock             # 备选: openai（多模态看图，摄像头感知/识屏用；参数见 vision 段）
+
+# ────────────────── 本地语音识别（providers.asr: whisper 时生效） ──────────────────
+asr:
+  model_size: "small"   # tiny/base/small/medium——越小越快；真机基准 base 比 small 快 ~3.5×
+                        #   且中文准确率持平（tools/bench_whisper.py 可复测）
+  device: "cpu"         # 计算设备；有 N 卡可试 cuda（首次可能下 CUDA 运行时）
+  compute_type: "int8"  # 量化：int8=CPU 推荐；float32 更准更慢
+  language: null        # null=自动检测；只说中文固定 "zh" 可跳过检测并根除幻觉循环；
+                        #   注意固定 "zh" 会伤日文/英文输入的识别
+  beam_size: 5          # 解码搜索宽度：1 最快；真机实测 3 与 5 无显著延迟差，取更稳选字
+  vad_filter: true      # Silero VAD 预过滤非语音（幻听防线主闸；关掉幻听显著增多）
+  no_speech_prob: 0.6   # 段级无语音概率闸：高于此值的段丢弃（防噪声被转写成文字）
+  avg_logprob_min: -1.0 # 段级平均置信度闸：低于此值的段丢弃（防低质量转写）
+
+# ────────────────── 回声消除与打断 ──────────────────
+audio:
+  aec: speex            # speex（Windows 缺省，pyaec/Rust，实测 33.9dB 消回声）/
+                        #   webrtc（Linux/macOS 选项）/ none（直通）
+                        #   初始化失败自动降级直通 + 强制关打断（§4.1 降级矩阵）
+  barge_in: false       # 外放打断：true=你说话能打断 miyako 的话音（需真 AEC 就绪）；
+                        #   残差>0.03 持续 400ms 触发；exetras 缺失时运行时强制 false
+                        #   ※ 遗留⑦：真机打断闭环未完全调优，可随时关回半双工
+
+# ────────────────── 主动行为（搭话/嗅探/热键） ──────────────────
+behavior:
+  idle_sniff:           # 闲置嗅探：你离开电脑后「看一眼」屏幕变化（只算本地指纹）
+    enabled: false      # 总开关（默认关；OCR 未装时自动禁用；陪玩域接管期间挂起）
+    hours: 4            # 无输入多久进入嗅探（小时）；与回座截帧/规则匹配联动
+  screenshot_hotkey: "Ctrl+Shift+M"  # 手动「帮我看屏幕」热键；设置窗可改（重启生效）
+  proactive:            # 主动搭话总闸（所有搭话路径都要过：DND→白名单→冷却→强度→LLM 时机）
+    enabled: true       # 总开关；false=miyako 永不主动开口
+    cooldown_min_gap_s: 600   # 任意两次主动搭话的最小全局间隔（秒；所有信号共享）
+    strength_threshold: 0.4   # 信号强度阈值（0~1；[reflect] 反思条目越多越收敛，防话痨）
+    fullscreen_whitelist: []  # 🔇 静音名单（进程名，逗号分隔）：这些应用全屏时 miyako
+                              #   全程闭嘴——竞技游戏/专注应用；与陪玩名单互斥，勿重复
+    greeting:                 # 时段问候（每日 1 次）
+      enabled: true
+      hour: 9                 # 触发时刻（24h 制）
+      text: "早上呀！新的一天也请多指教。"
+    memory_hook_hours: 8      # 记忆钩子提及间隔（小时；数据源=open_question 钩子表）
+    open_topic_hours: 2       # 未回扣话题追问间隔（追问一次即消费，不纠缠）
+    screenshot_cooldown_s: 30 # 手动截屏作为搭话信号的冷却（秒）
+
+# ────────────────── 摄像头感知（M-CAM；默认关）──────────────────
+# 硬约束：首开有隐私同意框（同意一次存档到 consent，重启免重复弹）；
+# 帧与观察内存态不落盘；DND 源头停发；画面定期发往你配置的 VLM 云端。
+camera:
+  consent: false        # 隐私同意存档（自动维护，勿手改；false=下次开启时再弹框）
+  enabled: false        # 总开关（托盘 UI 可开/关并写回本行；启动时按本行自动恢复）
+  interval_s: 45        # 采样间隔（秒，下限 15）；到点抓一帧送 VLM
+  max_side: 1024        # 帧最长边（px，等比缩小；越大越清晰越贵）
+
+# ────────────────── 视觉理解（providers.vlm: openai 时生效）──────────────────
+vision:
+  base_url: ""          # 空=回落 llm.api.base_url（用同一端点）
+  model: ""             # 空=回落 llm.api.model（需多模态，如 glm-5.3-flash）
+  api_key_env: "OPENAI_API_KEY"
+  timeout_s: 60
+  observe_prompt: "用不超过40字描述画面中用户的状态与情绪；没有值得注意的变化只输出 SKIP。"
+  cooldown_min: 10      # 摄像头两次主动搭话最小间隔（分钟）
+  max_per_day: 5        # 每日主动搭话上限（防话痨硬顶）
+
+# ────────────────── 界面主题（气泡 / 立绘 / 输入栏）──────────────────
+# 颜色 #RRGGBB；opacity 0~1；标注「实时」的项在设置窗即改即见
+ui_theme:
+  bubble:
+    scale: 1.0              # 气泡整体缩放（乘字号/内边距/圆角；1.2=放大 20%；实时）
+    font_family: "Microsoft YaHei UI"
+    font_size: 14           # 基础字号（实际=font_size×scale；实时）
+    width: 0                # 固定宽度 px（0=按内容自适应；锁宽同时是折行上限；实时）
+    height: 0               # 固定高度 px（0=自适应；锁定时文字垂直居中；实时）
+    max_sentences: 3        # 同屏保留句数 1~6（1=单句模式；实时）
+    text_color: "#333333"
+    text_opacity: 1.0       # 文字不透明度 0.05~1.0（实时）
+    bg_color: "#FFF8F0"
+    border_color: "#F4A7B9"
+    border_radius: 12       # 圆角（px，随 scale 缩放）
+    bg_opacity: 0.92        # 背景不透明度 0~1（文字恒全不透明；实时）
+    typing_interval_ms: 40  # 打字机速度（ms/字；40 为定案值）
+    padding_h: 10           # 内边距（横，随 scale 缩放）
+    padding_v: 6            # 内边距（纵）
+  pet_window:
+    base_height: 560        # 立绘显示高度 px（等比缩放；0/删除=原始尺寸；无上限；实时；280 在 1080p 全身立绘下过小）
+    outfit: "casual"        # 服装：casual/parka/uniform/waitress/naked（托盘「立绘」可切）
+    pose_mode: "auto"       # 朝向：auto（跟随气泡位置）/stand/left/right（托盘可切）
+    opacity: 1.0            # 立绘整体不透明度 0.1~1.0（实时）
+    always_on_top: true     # 立绘置顶
+  input_bar:                # 输入栏（聊天框）
+    width: 320              # 宽度 px（下限 200；实时）
+    font_size: 12           # 字号（实时）
+    # pos_x / pos_y 由「位置记忆」自动维护（退出/拖拽时写回），无需手改
+
+# ────────────────── 识屏触发规则 + 陪玩模式 ──────────────────
+# rules 字段说明：
+#   pattern   Python 正则（YAML 单引号串内反斜杠保持原义）
+#   route     text = OCR 文本路（文本充分时 VLM 都不调，近零成本）/ image = 截图送 VLM
+#   priority  high / mid / low（命中顺序）
+#   cooldown  可选防刷屏（"8h" / "30m" / "45s" / 裸数字=小时）
+screen_triggers:
+  cooldown_hours: 4          # 闲置识屏搭话的独立冷却（小时；陪玩有自己的一套）
+  companion:                 # 陪玩模式（M-PLAY）：名单内应用全屏/最大化时的场景吐槽
+    enabled: false           # 总开关（默认关；名单为空也等于不工作）
+    apps: []                 # 名单："进程名:类型"，逗号分隔；类型三选一——
+                             #   game  场景切换触发（画面大变化+稳定≥2s；音频无关，开黑语音不影响）
+                             #   video 音频静默≥video_silence_s 才说（暂停/片尾窗口，防剧透）
+                             #   web   浏览器：按该进程有无声音自动切语义
+                             #         （有声=看番[静默才说]/无声=看网页[页面切换可说]）
+                             #   例：["msedge.exe:web", "SomeGame.exe:game"]
+                             #   ※ 进程名=任务管理器「详细信息」列的完整名（含 .exe）；
+                             #     格式错误的条目启动时会托盘提示并忽略
+    sample_interval_s: 5     # 陪玩期间画面 hash 采样间隔（秒）
+    scene_stable_s: 2.0      # 场景切换需稳定此时长才触发（滤转场/闪切）
+    cooldown_min: 3          # 两次陪玩搭话最小间隔（分钟）
+    max_per_session: 12      # 每次会话（连续全屏/最大化时段）搭话上限
+    session_gap_min: 10      # 离开名单应用超此时长 → 会话计数重置
+    video_silence_s: 8       # video/web有声：音频静默此时长才说话（暂停/片尾窗口）
+  rules:
+    - name: error            # 示例：检测到错误码 → 文本路关心
+      pattern: '(错误|Error|エラー)[\s:]*0x[0-9A-Fa-f]+|\d{4,6}'
+      route: text
+      priority: high
+    - name: victory          # 示例：通关字样 → 画面路吐槽
+      pattern: '(VICTORY|通关|勝利|GAME CLEAR|クリア)'
+      route: image
+      priority: high
+    - name: code
+      pattern: '(Traceback|Exception|FAILED|エラー発生)'
+      route: text
+      priority: mid
+    - name: video
+      pattern: '(字幕|第[一二三\d]+集|EP\d+)'
+      route: text
+      priority: low
+      cooldown: 8h
+
+# ────────────────── 连续对话（🎤 对话开关 + VAD 断句）──────────────────
+voice:
+  autostart_mic: false   # 开关状态持久化：切换 🎤 即写回，启动自动恢复上次的开关状态
+  vad:                   # 能量断句参数（实测 CPU <0.5%，Silero 主选的兜底层）
+    threshold: 0.03      # 说话判定能量阈值（RMS 0~1）；环境吵可调高
+    tail_ms: 700         # 静默多久判说完（ms）；自适应开启时是下限地板
+    tail_adaptive: true  # 尾点自适应：切早（说完 end 后 1.5s 内又开口）+150ms/次上浮；
+                         #   安静越过 1.5s 恢复窗 -100ms/次回落（地板=tail_ms）
+    tail_max_ms: 1500    # 自适应尾点上限（最坏多等 800ms）
+    min_speech_ms: 250   # 最短有效说话时长（更短按噪声丢弃，不上行）
+    max_ms: 15000        # 单次发言强制截断（防忘关麦克风一直上传）
+
+# ────────────────── 检查更新（默认关；README 透明度声明）──────────────────
+update:
+  url: ""                # 发布者填：返回纯文本版本号的 URL（如 https://.../VERSION）；
+                         # 留空=托盘提示未配置，功能完全不工作
+
+# ────────────────── 工具模式（M-TOOL 提醒域；2026-10 定案）──────────────────
+# 番茄钟/闹钟/倒计时/健康提醒/整点报时/节日问候。域隔离设计：
+#   · 全部无视 DND（履约与提醒不受勿扰拦截），总控权在本节 enabled 总闸；
+#   · llm.provider: api 时事件走服务端 LLM 人格播报+TTS；mock 或断线时
+#     客户端本地固定台词气泡（永不静默丢失）；
+#   · 播报轮「只读 persona」：不检索记忆、不进对话历史、不写任何状态。
+tools:
+  enabled: true            # 【总闸】false=全部提醒功能关闭（关闭后行为与旧版一致）
+  alarms: []               # 闹钟列表（托盘「闹钟管理…」维护，也可手改）：
+                           #   "HH:MM" = 每日重复闹钟（如 "07:30"）
+                           #   "YYYY-MM-DD HH:MM" = 一次性闹钟（过期启动时自动清除）
+                           #   整点后错过不补触发（含启动时已过点的当日闹钟）
+  pomodoro:                # 番茄钟时长（托盘「工具」▸ 开始/停止，进行中显示剩余分钟）
+    work_min: 25           # 专注时长（分钟，1~120）
+    break_min: 5           # 休息时长（分钟，1~60）；休息结束自动进入下一轮专注
+  water_min: 45            # 喝水提醒间隔（分钟，5~360）；0=关
+  sedentary_min: 90        # 久坐提醒间隔（分钟，15~480）；0=关
+  active_idle_s: 300       # 健康提醒的「人在」判定：距上次键鼠输入低于此秒数才提醒
+                           #   （人离开电脑时不提醒；实时读系统输入空闲时长）
+  hourly:                  # 整点报时
+    enabled: false         # 总开关（默认关）
+    quiet_start: 22        # 免打扰起始时（24h 制）：22:00 起不报
+    quiet_end: 8           #   至次日 8:00 恢复（区间跨午夜）
+  festivals:               # 节日/纪念日问候（每日一次）
+    enabled: true
+    custom: ""             # 自定义纪念日，格式 "MM-DD 名称, MM-DD 名称"
+                           #   （如 "05-20 纪念日, 12-01 生日"）；全角逗号/冒号容错
+    hour: 9                # 当日触发时刻（24h 制，到点且未祝贺过才触发）
+                           # 农历六大节日（春节/元宵/端午/七夕/中秋/重阳）内置查表
+                           #   2026~2035；表外年份自动跳过（仅公历节日生效）

@@ -1,0 +1,49 @@
+# ============================================================
+# miyako 依赖分层（plan.md M-1.2）
+#
+#   base  层：本文件未注释的依赖，`pip install -r requirements.txt`
+#   extras层：六组可选依赖，声明于 pyproject.toml [project.optional-dependencies]
+#             安装方式：pip install -e ".[asr,aec]"（组名见文件尾部说明）
+#
+# 说明：pytest 未单列于 plan 的 base 清单，但它是 pytest-asyncio 的硬依赖，
+#       且 §1 进度恢复规则要求运行 `pytest tests/`，故在此显式声明。
+# ============================================================
+
+# ---- UI ----
+# <6.9 上限：6.11 实测在本机（Win10 x64）QtCore DLL 加载失败（入口点缺失，
+# 净 PATH 下同样复现）；6.8 LTS 验证可用。上游修复后可放宽。
+PySide6>=6.6,<6.9
+
+# ---- 服务端 ----
+fastapi
+uvicorn[standard]
+websockets
+
+# ---- HTTP / 数据 ----
+httpx
+pydantic
+pydantic-settings
+
+# ---- 配置 ----
+PyYAML
+python-dotenv
+
+# ---- 音频 / 数值 ----
+numpy
+sounddevice
+
+# ---- 测试 ----
+pytest
+pytest-asyncio
+freezegun
+
+# ============================================================
+# extras 六组（不随 base 安装，按需启用；正式声明见 pyproject.toml）
+#
+#   asr        -> faster-whisper>=1.0             # M2.3 本地语音识别（CPU int8）
+#   aec        -> pyaec>=1.0, pycaw, webrtc-audio-processing(win 除外)  # M+1.5 回声消除(v1.9.4 Windows 平替=pyaec) / 系统混音峰值
+#   ocr        -> rapidocr-onnxruntime>=1.4       # M+3.2 闲置嗅探 OCR 文本路
+#   tts_edge   -> edge-tts>=6.1, miniaudio>=1.0   # M2.4 TTS 四级链第②级（在线）
+#   memory     -> sqlite-vec>=0.1                 # M+1.2 向量检索（失败降级关键词）
+#   llm_ollama -> ollama>=0.3                     # 本地 LLM 可选后端
+# ============================================================

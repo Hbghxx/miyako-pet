@@ -1,0 +1,137 @@
+package_id: miyako
+schema_version: 1
+package_version: 1.0.1
+spec_version: miyako_v1.9
+generated_by: scripts/build_char_package.py（产线幂等构建）+ tools/adapt_sprites_manifest.py（主项目 schema 适配）
+character_package_dir: data/characters/miyako.char
+source:
+  voice_map:
+    path: scn/voice_map.json
+    sha256: d319f4bd1127197eee36e33071a1f64445ddf362c964635b2c1bdaa62d5ffd29
+    entries: 2098
+  voice_dir:
+    path: voice/my
+    ogg_count: 2106
+  sprites_dir:
+    path: fgimage/output
+    png_count: 104
+assets:
+  sprite:
+    manifest: sprites/manifest.json
+    format: png/rgba
+    axes:
+      expression:
+      - normal
+      - happy
+      - shy
+      - pout
+      - angry
+      - sad
+      - surprise
+      - thinking
+      - sleepy
+      costume:
+      - casual
+      - uniform
+      - waitress
+      - parka
+      pose:
+      - A
+      - B
+      - C
+      - D
+    coverage_note: A 缺 sad、B 缺 sleepy、D 为背影无表情轴——查表缺项由 sprite_manager 逐级 fallback normal
+  live2d:
+    enabled: false
+    note: 预留资产节（设计文档 7.9）；触发升级见附录 A 翻案条款
+  reference_audio:
+    candidates_meta: reference_audio/candidates.yaml
+    candidates_count: 10
+    dataset_list: reference_audio/dataset/miyako.list
+    dataset_clips: 1459
+    final_review: pending（不在本工单内）
+  audiofile:
+    root: audiofile
+    buckets:
+    - normal
+    - happy
+    - shy
+    - pout
+    - angry
+    - sad
+    - surprise
+    - thinking
+    - sleepy
+    clips_per_bucket_cap: 20
+    counts:
+      normal: 20
+      happy: 20
+      shy: 20
+      pout: 20
+      angry: 19
+      sad: 20
+      surprise: 20
+      thinking: 20
+      sleepy: 0
+    empty_buckets:
+    - sleepy
+emotion_map:
+  note: 游戏 face 标签 -> 9 元闭集；未知/缺失 fallback normal（硬约束）
+  face_to_emotion:
+    通常: normal
+    真面目: normal
+    微笑: happy
+    笑み: happy
+    にっこり: happy
+    うふふ: happy
+    ウインク: happy
+    苦笑: shy
+    うっとり: shy
+    キス: shy
+    拗ね: pout
+    ふふん: pout
+    怒り: angry
+    ぷんすか: angry
+    説教: angry
+    悲しみ: sad
+    不安: sad
+    驚き: surprise
+    慌て: surprise
+    きょとん: thinking
+    ジト目: thinking
+  face_counts:
+    <unknown>: 761
+    笑み: 146
+    通常: 170
+    うっとり: 29
+    拗ね: 255
+    きょとん: 61
+    苦笑: 139
+    驚き: 103
+    不安: 104
+    にっこり: 54
+    ウインク: 6
+    真面目: 103
+    悲しみ: 47
+    微笑: 31
+    うふふ: 4
+    慌て: 9
+    説教: 22
+    ジト目: 39
+    怒り: 6
+    キス: 4
+    ふふん: 3
+    ぷんすか: 2
+fallbacks:
+  unknown_emotion: normal
+  empty_audiofile_bucket: normal
+game_assets_note: sprites/*.png、reference_audio/**、audiofile/** 为游戏版权物料：不进 git 与发布包（主项目 .gitignore
+  与 make_release 排除清单；产线同策略）。主项目侧接入记录（2026-09）：sprites 104 张三轴立绘（A 缺 sad 由查表回退
+  normal 兜底）、audiofile 9 桶 159 条预录、reference_audio/candidates 10 条推理参考（训练集 dataset/ 留产线未接入）。
+first_person_stat:
+  私: 211
+  わたし: 0
+  あたし: 0
+  うち: 16
+  僕: 0
+  俺: 1

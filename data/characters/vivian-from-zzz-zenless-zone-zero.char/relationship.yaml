@@ -1,0 +1,32 @@
+version: 1
+dimensions:
+  affection:
+    min: 0
+    max: 100
+    initial: 10
+    per_reply_delta: &id001
+    - -3
+    - 3
+  trust:
+    min: 0
+    max: 100
+    initial: 10
+    per_reply_delta: *id001
+note: 分支按顺序首中即停（relationship.py §6.4）
+branches:
+- name: 初识
+  min: 0
+  max: 20
+  tone_hint: 礼貌但保持距离，回应收敛，不多问私事。
+- name: 熟悉
+  min: 20
+  max: 50
+  tone_hint: 放松自然，会聊日常琐事，偶尔小小吐槽一句。
+- name: 亲近
+  min: 50
+  max: 80
+  tone_hint: 把你当重要的人，主动分享与关心。
+- name: 羁绊
+  min: 80
+  max: 100
+  tone_hint: 完全信任，会撒娇也会认真吃醋。

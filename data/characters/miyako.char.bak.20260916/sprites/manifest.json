@@ -1,0 +1,406 @@
+{
+ "version": "1.0.0",
+ "character": "miyako",
+ "note": "全量立绘查表（tools/compose_all_sprites.py 全枚举生成）；表情键 9 元闭集照旧，闭集外差分入 expressions_extra 供变体/演出用。",
+ "emotion_set": [
+  "normal",
+  "happy",
+  "shy",
+  "angry",
+  "sad",
+  "surprise",
+  "thinking",
+  "pout",
+  "sleepy"
+ ],
+ "default_outfit": "default",
+ "default_pose": "stand",
+ "png_expression_map": {
+  "neutral": "normal",
+  "happy": "happy",
+  "love": "shy",
+  "angry": "angry",
+  "sad": "sad",
+  "surprised": "surprise",
+  "confused": "thinking",
+  "sulky": "pout",
+  "sleepy": "sleepy"
+ },
+ "pose_labels": {
+  "A": "正面",
+  "B": "右向き",
+  "C": "左向き",
+  "D": "後ろ（背影，无表情轴）"
+ },
+ "dormant": "miyako_A_casual_sleepy.png",
+ "sprites": {
+  "normal": {
+   "naked": {
+    "stand": "miyako_A_naked_neutral.png",
+    "right": "miyako_B_naked_neutral.png",
+    "left": "miyako_C_naked_neutral.png",
+    "back": "miyako_D_naked_back.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_neutral.png",
+    "right": "miyako_B_parka_neutral.png",
+    "left": "miyako_C_parka_neutral.png",
+    "back": "miyako_D_parka_back.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_neutral.png",
+    "right": "miyako_B_uniform_neutral.png",
+    "left": "miyako_C_uniform_neutral.png",
+    "back": "miyako_D_uniform_back.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_neutral.png",
+    "right": "miyako_B_casual_neutral.png",
+    "left": "miyako_C_casual_neutral.png",
+    "back": "miyako_D_casual_back.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_neutral.png",
+    "right": "miyako_B_waitress_neutral.png",
+    "left": "miyako_C_waitress_neutral.png",
+    "back": "miyako_D_waitress_back.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_neutral.png",
+    "right": "miyako_B_casual_neutral.png",
+    "left": "miyako_C_casual_neutral.png",
+    "back": "miyako_D_casual_back.png"
+   }
+  },
+  "happy": {
+   "naked": {
+    "stand": "miyako_A_naked_happy.png",
+    "right": "miyako_B_naked_happy.png",
+    "left": "miyako_C_naked_happy.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_happy.png",
+    "right": "miyako_B_parka_happy.png",
+    "left": "miyako_C_parka_happy.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_happy.png",
+    "right": "miyako_B_uniform_happy.png",
+    "left": "miyako_C_uniform_happy.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_happy.png",
+    "right": "miyako_B_casual_happy.png",
+    "left": "miyako_C_casual_happy.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_happy.png",
+    "right": "miyako_B_waitress_happy.png",
+    "left": "miyako_C_waitress_happy.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_happy.png",
+    "right": "miyako_B_casual_happy.png",
+    "left": "miyako_C_casual_happy.png"
+   }
+  },
+  "shy": {
+   "naked": {
+    "stand": "miyako_A_naked_love.png",
+    "right": "miyako_B_naked_love.png",
+    "left": "miyako_C_naked_love.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_love.png",
+    "right": "miyako_B_parka_love.png",
+    "left": "miyako_C_parka_love.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_love.png",
+    "right": "miyako_B_uniform_love.png",
+    "left": "miyako_C_uniform_love.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_love.png",
+    "right": "miyako_B_casual_love.png",
+    "left": "miyako_C_casual_love.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_love.png",
+    "right": "miyako_B_waitress_love.png",
+    "left": "miyako_C_waitress_love.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_love.png",
+    "right": "miyako_B_casual_love.png",
+    "left": "miyako_C_casual_love.png"
+   }
+  },
+  "angry": {
+   "naked": {
+    "stand": "miyako_A_naked_angry.png",
+    "right": "miyako_B_naked_angry.png",
+    "left": "miyako_C_naked_angry.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_angry.png",
+    "right": "miyako_B_parka_angry.png",
+    "left": "miyako_C_parka_angry.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_angry.png",
+    "right": "miyako_B_uniform_angry.png",
+    "left": "miyako_C_uniform_angry.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_angry.png",
+    "right": "miyako_B_casual_angry.png",
+    "left": "miyako_C_casual_angry.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_angry.png",
+    "right": "miyako_B_waitress_angry.png",
+    "left": "miyako_C_waitress_angry.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_angry.png",
+    "right": "miyako_B_casual_angry.png",
+    "left": "miyako_C_casual_angry.png"
+   }
+  },
+  "surprise": {
+   "naked": {
+    "stand": "miyako_A_naked_surprised.png",
+    "right": "miyako_B_naked_surprised.png",
+    "left": "miyako_C_naked_surprised.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_surprised.png",
+    "right": "miyako_B_parka_surprised.png",
+    "left": "miyako_C_parka_surprised.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_surprised.png",
+    "right": "miyako_B_uniform_surprised.png",
+    "left": "miyako_C_uniform_surprised.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_surprised.png",
+    "right": "miyako_B_casual_surprised.png",
+    "left": "miyako_C_casual_surprised.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_surprised.png",
+    "right": "miyako_B_waitress_surprised.png",
+    "left": "miyako_C_waitress_surprised.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_surprised.png",
+    "right": "miyako_B_casual_surprised.png",
+    "left": "miyako_C_casual_surprised.png"
+   }
+  },
+  "thinking": {
+   "naked": {
+    "stand": "miyako_A_naked_confused.png",
+    "right": "miyako_B_naked_confused.png",
+    "left": "miyako_C_naked_confused.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_confused.png",
+    "right": "miyako_B_parka_confused.png",
+    "left": "miyako_C_parka_confused.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_confused.png",
+    "right": "miyako_B_uniform_confused.png",
+    "left": "miyako_C_uniform_confused.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_confused.png",
+    "right": "miyako_B_casual_confused.png",
+    "left": "miyako_C_casual_confused.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_confused.png",
+    "right": "miyako_B_waitress_confused.png",
+    "left": "miyako_C_waitress_confused.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_confused.png",
+    "right": "miyako_B_casual_confused.png",
+    "left": "miyako_C_casual_confused.png"
+   }
+  },
+  "pout": {
+   "naked": {
+    "stand": "miyako_A_naked_sulky.png",
+    "right": "miyako_B_naked_sulky.png",
+    "left": "miyako_C_naked_sulky.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_sulky.png",
+    "right": "miyako_B_parka_sulky.png",
+    "left": "miyako_C_parka_sulky.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_sulky.png",
+    "right": "miyako_B_uniform_sulky.png",
+    "left": "miyako_C_uniform_sulky.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_sulky.png",
+    "right": "miyako_B_casual_sulky.png",
+    "left": "miyako_C_casual_sulky.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_sulky.png",
+    "right": "miyako_B_waitress_sulky.png",
+    "left": "miyako_C_waitress_sulky.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_sulky.png",
+    "right": "miyako_B_casual_sulky.png",
+    "left": "miyako_C_casual_sulky.png"
+   }
+  },
+  "sleepy": {
+   "naked": {
+    "stand": "miyako_A_naked_sleepy.png",
+    "left": "miyako_C_naked_sleepy.png"
+   },
+   "parka": {
+    "stand": "miyako_A_parka_sleepy.png",
+    "left": "miyako_C_parka_sleepy.png"
+   },
+   "uniform": {
+    "stand": "miyako_A_uniform_sleepy.png",
+    "left": "miyako_C_uniform_sleepy.png"
+   },
+   "casual": {
+    "stand": "miyako_A_casual_sleepy.png",
+    "left": "miyako_C_casual_sleepy.png"
+   },
+   "waitress": {
+    "stand": "miyako_A_waitress_sleepy.png",
+    "left": "miyako_C_waitress_sleepy.png"
+   },
+   "default": {
+    "stand": "miyako_A_casual_sleepy.png",
+    "left": "miyako_C_casual_sleepy.png"
+   }
+  },
+  "sad": {
+   "naked": {
+    "right": "miyako_B_naked_sad.png",
+    "left": "miyako_C_naked_sad.png"
+   },
+   "parka": {
+    "right": "miyako_B_parka_sad.png",
+    "left": "miyako_C_parka_sad.png"
+   },
+   "uniform": {
+    "right": "miyako_B_uniform_sad.png",
+    "left": "miyako_C_uniform_sad.png"
+   },
+   "casual": {
+    "right": "miyako_B_casual_sad.png",
+    "left": "miyako_C_casual_sad.png"
+   },
+   "waitress": {
+    "right": "miyako_B_waitress_sad.png",
+    "left": "miyako_C_waitress_sad.png"
+   },
+   "default": {
+    "right": "miyako_B_casual_sad.png",
+    "left": "miyako_C_casual_sad.png"
+   }
+  }
+ },
+ "expressions_extra": {
+  "A": {
+   "wry": {
+    "naked": "miyako_A_naked_wry.png",
+    "parka": "miyako_A_parka_wry.png",
+    "uniform": "miyako_A_uniform_wry.png",
+    "casual": "miyako_A_casual_wry.png",
+    "waitress": "miyako_A_waitress_wry.png"
+   }
+  },
+  "B": {
+   "puzzled": {
+    "naked": "miyako_B_naked_puzzled.png",
+    "parka": "miyako_B_parka_puzzled.png",
+    "uniform": "miyako_B_uniform_puzzled.png",
+    "casual": "miyako_B_casual_puzzled.png",
+    "waitress": "miyako_B_waitress_puzzled.png"
+   },
+   "serious": {
+    "naked": "miyako_B_naked_serious.png",
+    "parka": "miyako_B_parka_serious.png",
+    "uniform": "miyako_B_uniform_serious.png",
+    "casual": "miyako_B_casual_serious.png",
+    "waitress": "miyako_B_waitress_serious.png"
+   }
+  },
+  "C": {
+   "flustered": {
+    "naked": "miyako_C_naked_flustered.png",
+    "parka": "miyako_C_parka_flustered.png",
+    "uniform": "miyako_C_uniform_flustered.png",
+    "casual": "miyako_C_casual_flustered.png",
+    "waitress": "miyako_C_waitress_flustered.png"
+   },
+   "wry": {
+    "naked": "miyako_C_naked_wry.png",
+    "parka": "miyako_C_parka_wry.png",
+    "uniform": "miyako_C_uniform_wry.png",
+    "casual": "miyako_C_casual_wry.png",
+    "waitress": "miyako_C_waitress_wry.png"
+   },
+   "smile": {
+    "naked": "miyako_C_naked_smile.png",
+    "parka": "miyako_C_parka_smile.png",
+    "uniform": "miyako_C_uniform_smile.png",
+    "casual": "miyako_C_casual_smile.png",
+    "waitress": "miyako_C_waitress_smile.png"
+   }
+  }
+ },
+ "accessories": {
+  "hairpin": {
+   "A": {
+    "file": "acc_A_hairpin.png",
+    "left": 729,
+    "top": 228
+   },
+   "B": {
+    "file": "acc_B_hairpin.png",
+    "left": 799,
+    "top": 295
+   },
+   "C": {
+    "file": "acc_C_hairpin.png",
+    "left": 724,
+    "top": 278
+   }
+  },
+  "glasses": {
+   "A": {
+    "file": "acc_A_glasses.png",
+    "left": 574,
+    "top": 374
+   },
+   "B": {
+    "file": "acc_B_glasses.png",
+    "left": 637,
+    "top": 344
+   },
+   "C": {
+    "file": "acc_C_glasses.png",
+    "left": 554,
+    "top": 343
+   }
+  }
+ }
+}

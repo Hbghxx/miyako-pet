@@ -1,0 +1,51 @@
+# ---- 虚拟环境与运行时产物（M-1.1 规定项 + v1.9）----
+.venv/
+data/memory.db*
+data/memory/*
+!data/memory/.gitkeep
+data/server.pid
+data/tmp/
+data/server.token
+config/settings.yaml
+.env
+__pycache__/
+
+# ---- 角色包游戏版权物料（产线接入 v1.9；不进 git 与发布包）----
+data/characters/*/sprites/*.png
+data/characters/*/audiofile/
+data/characters/*/reference_audio/
+
+# ---- 默认 TTS 权重（2026-09-18 酒馆卡适配；大文件+版权，不进 git）----
+data/tts/
+data/characters/*/tts/**/*.pth
+data/characters/*/tts/**/*.ckpt
+data/characters/*/tts/**/*.bin
+
+# ---- Python 工具链常规排除 ----
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# ---- 开发和测试文件 ----
+tests/
+tools/
+output/
+
+# ---- 文档和脚本 ----
+PROGRESS.md
+RELEASE_CHECKLIST.md
+README.txt
+install.bat
+*.bat
+*.cmd
+
+# ---- 中文文档 ----
+miyako产品介绍.md
+miyako使用手册.md
+
+# ---- 本地工具状态（不入库）----
+.mimosa/
+
+# 运行日志（2026-09-11 起落项目内 logs/）
+logs/

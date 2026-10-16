@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "builtin": true,
+  "default_outfit": "default",
+  "sprites": {
+    "normal": {
+      "default": {
+        "stand": "normal.png"
+      }
+    },
+    "happy": {
+      "default": {
+        "stand": "happy.png"
+      }
+    },
+    "shy": {
+      "default": {
+        "stand": "shy.png"
+      }
+    },
+    "pout": {
+      "default": {
+        "stand": "pout.png"
+      }
+    },
+    "angry": {
+      "default": {
+        "stand": "angry.png"
+      }
+    },
+    "sad": {
+      "default": {
+        "stand": "sad.png"
+      }
+    },
+    "surprise": {
+      "default": {
+        "stand": "surprise.png"
+      }
+    },
+    "thinking": {
+      "default": {
+        "stand": "thinking.png"
+      }
+    },
+    "sleepy": {
+      "default": {
+        "stand": "sleepy.png"
+      }
+    }
+  },
+  "mouth_frames": [
+    "normal.png"
+  ],
+  "blink_frames": [
+    "normal.png"
+  ],
+  "dormant": "dormant.png"
+}
