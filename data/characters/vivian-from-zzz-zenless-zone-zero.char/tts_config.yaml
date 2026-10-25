@@ -1,9 +1,0 @@
-strip_actions: true
-quote_guard: true
-replace_map:
-  zh: {}
-  ja: {}
-glossary:
-  zh: {}
-  ja: {}
-verbal_tics: []

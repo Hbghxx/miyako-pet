@@ -31,14 +31,20 @@ dist/
 tests/
 tools/
 output/
+pytest.ini
+.github/
+docs/
+.zcode/
+
+# ---- 非默认角色包与本地试验数据（不入库；默认包 miyako.char 除外）----
+data/characters/*.bak.*/
+data/characters/miyako_life.char/
+data/characters/vivian-*.char/
 
 # ---- 文档和脚本 ----
 PROGRESS.md
 RELEASE_CHECKLIST.md
 README.txt
-install.bat
-*.bat
-*.cmd
 
 # ---- 中文文档 ----
 miyako产品介绍.md
